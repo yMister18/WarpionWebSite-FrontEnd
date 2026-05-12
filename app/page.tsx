@@ -1,3 +1,6 @@
+import { MetricCard } from '@/components/dashboard/metric-card';
+import { SectionCard } from '@/components/dashboard/section-card';
+import { TopNav } from '@/components/dashboard/top-nav';
 import { getMetrics } from '@/lib/warpion-api';
 
 export default async function HomePage() {
@@ -7,49 +10,149 @@ export default async function HomePage() {
 
     return (
       <main className="min-h-screen bg-zinc-950 text-white">
-        <div className="mx-auto max-w-5xl px-6 py-12">
+        <TopNav current="dashboard" />
+
+        <div className="mx-auto max-w-7xl px-6 py-10">
           <div className="mb-10">
-            <h1 className="text-4xl font-bold tracking-tight">
-              Warpion Website
-            </h1>
+            <h2 className="text-3xl font-bold tracking-tight text-white">
+              Dashboard
+            </h2>
             <p className="mt-2 text-zinc-400">
-              Painel administrativo inicial ligado ao Warpion-API.
+              Visão geral do estado operacional do ecossistema Warpion.
+            </p>
+            <p className="mt-2 text-sm text-zinc-500">
+              Última atualização: {new Date(generatedAt).toLocaleString()}
             </p>
           </div>
 
-          <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-            <h2 className="text-xl font-semibold">Estado da ligação</h2>
-            <p className="mt-2 text-green-400">
-              Ligação ao Warpion-API estabelecida com sucesso.
-            </p>
-            <p className="mt-2 text-sm text-zinc-400">
-              Última geração de métricas: {new Date(generatedAt).toLocaleString()}
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-              <h2 className="mb-4 text-xl font-semibold">Commands</h2>
-              <div className="space-y-2 text-sm text-zinc-300">
-                <p>Pending: <span className="font-semibold text-white">{commands.pending}</span></p>
-                <p>Published: <span className="font-semibold text-white">{commands.published}</span></p>
-                <p>Processing: <span className="font-semibold text-white">{commands.processing}</span></p>
-                <p>Delivered: <span className="font-semibold text-white">{commands.delivered}</span></p>
-                <p>Failed: <span className="font-semibold text-white">{commands.failed}</span></p>
+          <div className="grid gap-8">
+            <SectionCard
+              title="Commands"
+              description="Estado atual de processamento dos shop commands."
+            >
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                <MetricCard
+                  title="Pending"
+                  value={commands.pending}
+                  description="Aguardam processamento"
+                  accent="yellow"
+                />
+                <MetricCard
+                  title="Published"
+                  value={commands.published}
+                  description="Publicados no pipeline"
+                  accent="blue"
+                />
+                <MetricCard
+                  title="Processing"
+                  value={commands.processing}
+                  description="Em execução neste momento"
+                  accent="zinc"
+                />
+                <MetricCard
+                  title="Delivered"
+                  value={commands.delivered}
+                  description="Executados com sucesso"
+                  accent="green"
+                />
+                <MetricCard
+                  title="Failed"
+                  value={commands.failed}
+                  description="Falharam e requerem atenção"
+                  accent="red"
+                />
               </div>
-            </section>
+            </SectionCard>
 
-            <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-              <h2 className="mb-4 text-xl font-semibold">Orders</h2>
-              <div className="space-y-2 text-sm text-zinc-300">
-                <p>Pending payment: <span className="font-semibold text-white">{orders.pendingPayment}</span></p>
-                <p>Paid: <span className="font-semibold text-white">{orders.paid}</span></p>
-                <p>Failed payment: <span className="font-semibold text-white">{orders.failedPayment}</span></p>
-                <p>Delivered: <span className="font-semibold text-white">{orders.delivered}</span></p>
-                <p>Partial: <span className="font-semibold text-white">{orders.partial}</span></p>
-                <p>Processing: <span className="font-semibold text-white">{orders.processing}</span></p>
+            <SectionCard
+              title="Orders"
+              description="Estado de pagamento e entrega das orders."
+            >
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                <MetricCard
+                  title="Pending Payment"
+                  value={orders.pendingPayment}
+                  description="Ainda sem pagamento"
+                  accent="yellow"
+                />
+                <MetricCard
+                  title="Paid"
+                  value={orders.paid}
+                  description="Pagamento confirmado"
+                  accent="blue"
+                />
+                <MetricCard
+                  title="Failed Payment"
+                  value={orders.failedPayment}
+                  description="Pagamento falhado"
+                  accent="red"
+                />
+                <MetricCard
+                  title="Delivered"
+                  value={orders.delivered}
+                  description="Entrega concluída"
+                  accent="green"
+                />
+                <MetricCard
+                  title="Processing / Partial"
+                  value={orders.processing + orders.partial}
+                  description="Ainda a decorrer ou parcial"
+                  accent="zinc"
+                />
               </div>
-            </section>
+            </SectionCard>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <SectionCard
+                title="Resumo rápido"
+                description="Leitura operacional rápida do sistema."
+              >
+                <div className="space-y-3 text-sm text-zinc-300">
+                  <p>
+                    Total de commands monitorizados:{' '}
+                    <span className="font-semibold text-white">
+                      {commands.pending +
+                        commands.published +
+                        commands.processing +
+                        commands.delivered +
+                        commands.failed}
+                    </span>
+                  </p>
+                  <p>
+                    Commands com atenção necessária:{' '}
+                    <span className="font-semibold text-red-300">
+                      {commands.failed + commands.processing}
+                    </span>
+                  </p>
+                  <p>
+                    Orders em circuito ativo:{' '}
+                    <span className="font-semibold text-white">
+                      {orders.paid + orders.processing + orders.partial}
+                    </span>
+                  </p>
+                </div>
+              </SectionCard>
+
+              <SectionCard
+                title="Estado da ligação"
+                description="Conectividade entre Website e Warpion-API."
+              >
+                <div className="space-y-3 text-sm text-zinc-300">
+                  <p className="font-medium text-green-400">
+                    Ligação ao Warpion-API estabelecida com sucesso.
+                  </p>
+                  <p>
+                    Fonte de dados: <span className="text-white">/api/internal/shop/metrics</span>
+                  </p>
+                  <p>
+                    Atualização gerada em:{' '}
+                    <span className="text-white">
+                      {new Date(generatedAt).toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+              </SectionCard>
+            </div>
           </div>
         </div>
       </main>
@@ -60,14 +163,12 @@ export default async function HomePage() {
 
     return (
       <main className="min-h-screen bg-zinc-950 text-white">
+        <TopNav current="dashboard" />
+
         <div className="mx-auto max-w-4xl px-6 py-12">
           <div className="rounded-2xl border border-red-900 bg-red-950/40 p-6">
-            <h1 className="text-3xl font-bold text-red-300">
-              Warpion Website
-            </h1>
-            <p className="mt-4 text-red-200">
-              Falha ao ligar ao Warpion-API.
-            </p>
+            <h1 className="text-3xl font-bold text-red-300">Warpion Website</h1>
+            <p className="mt-4 text-red-200">Falha ao ligar ao Warpion-API.</p>
             <p className="mt-2 text-sm text-red-300/90">{message}</p>
           </div>
         </div>
