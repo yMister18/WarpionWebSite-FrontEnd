@@ -23,7 +23,7 @@ function NavItem({ href, label, active = false }: NavItemProps) {
 }
 
 type TopNavProps = {
-  current?: 'dashboard' | 'stuck-commands' | 'failed-commands' | 'orders';
+  current?: 'dashboard' | 'stuck-commands' | 'failed-commands' | 'orders' | 'audit-log';
 };
 
 export function TopNav({ current = 'dashboard' }: TopNavProps) {
@@ -56,6 +56,11 @@ export function TopNav({ current = 'dashboard' }: TopNavProps) {
               href="/orders"
               label="Orders"
               active={current === 'orders'}
+            />
+            <NavItem
+              href="/audit-log"
+              label="Audit Log"
+              active={current === 'audit-log'}
             />
           </nav>
 

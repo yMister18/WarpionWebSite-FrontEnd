@@ -12,6 +12,10 @@ function getAdminPassword() {
   return password;
 }
 
+function getAdminUsername() {
+  return process.env.ADMIN_USERNAME || 'warpion-admin';
+}
+
 export function isValidAdminPassword(password: string) {
   return password === getAdminPassword();
 }
@@ -19,12 +23,12 @@ export function isValidAdminPassword(password: string) {
 export async function createAdminSession() {
   const cookieStore = await cookies();
 
-  cookieStore.set(ADMIN_SESSION_COOKIE, 'authenticated', {
+  cookieStore.set(ADMIN_SESSION_COOKIE, getAdminUsername(), {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: 60 * 60 * 12, // 12 horas
+    maxAge: 60 * 60 * 12,
   });
 }
 
@@ -44,5 +48,10 @@ export async function hasAdminSession() {
   const cookieStore = await cookies();
   const session = cookieStore.get(ADMIN_SESSION_COOKIE);
 
-  return session?.value === 'authenticated';
+  return Boolean(session?.value);
+}
+
+export async function getAdminActor() {
+  const cookieStore = await cookies();
+  return cookieStore.get(ADMIN_SESSION_COOKIE)?.value ?? 'unknown-admin';
 }

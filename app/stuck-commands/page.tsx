@@ -1,4 +1,5 @@
 import { PageHeader } from '@/components/dashboard/page-header';
+import { PageToolbar } from '@/components/dashboard/page-toolbar';
 import { SectionCard } from '@/components/dashboard/section-card';
 import { StuckCommandsTable } from '@/components/dashboard/stuck-commands-table';
 import { TopNav } from '@/components/dashboard/top-nav';
@@ -19,6 +20,8 @@ export default async function StuckCommandsPage() {
             description="Comandos presos em PROCESSING para além do timeout configurado."
             meta={`Cutoff usado: ${new Date(cutoff).toLocaleString()} • ${count} comando(s) encontrados`}
           />
+
+          <PageToolbar />
 
           <SectionCard
             title="Lista de comandos presos"

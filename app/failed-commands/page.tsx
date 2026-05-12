@@ -1,5 +1,6 @@
 import { FailedCommandsTable } from '@/components/dashboard/failed-commands-table';
 import { PageHeader } from '@/components/dashboard/page-header';
+import { PageToolbar } from '@/components/dashboard/page-toolbar';
 import { SectionCard } from '@/components/dashboard/section-card';
 import { TopNav } from '@/components/dashboard/top-nav';
 import { getFailedCommands } from '@/lib/warpion-api';
@@ -19,6 +20,8 @@ export default async function FailedCommandsPage() {
             description="Comandos que falharam durante a execução e podem precisar de requeue."
             meta={`${count} comando(s) em FAILED`}
           />
+
+          <PageToolbar />
 
           <SectionCard
             title="Lista de comandos falhados"
